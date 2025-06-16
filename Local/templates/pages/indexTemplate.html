@@ -1,0 +1,190 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}Página Inicial{% endblock %}
+
+<!-- Conteúdo do template -->
+{% block page %}
+<section id="homePage" class="container-fluid">
+    <h1 class="text-center mt-4">Explore the World’s Largest Solar Power Stations.</h1>
+    <div class="container-fluid text-center">
+        <h3 id="indexTitle"></h3>
+
+        <!-- Contagem de estações -->
+        <div class="container-fluid mt-5">
+            <h3>A total of 
+            <strong class="text-primary" id="stationCount">N/A</strong> 
+            operating solar stations worldwide
+            </h3>
+
+            <p>We have information of solar stations spread through 
+            <strong class="text-primary" id="continentCount">N/A</strong> 
+            continents and 
+            <strong class="text-primary"id="countryCount">N/A</strong> countries.
+            </p>
+        </div>
+        
+        <!-- Botão para explorar o mapa -->
+        <a href="/map"><button style="height: 5.9rem;" class="btn btn-primary mt-4 fs-3 p-4" data-bs-theme="dark" id="registerButton">Explore our interactive World Map</button></a>
+        
+        <!-- Capacidades -->
+        <div class="container-fluid mt-5">
+
+            <!-- Soma de todas as capacidades -->
+            <h3>A combined clean electricity production capacity of 
+            <strong class="text-primary" id="capacitySum">N/A</strong> 
+            MW with only photovoltaic technology.</h3>
+
+            <!-- Melhor estação em capacidade -->
+            <p>
+                The best station in this matter is 
+                <strong class="text-primary" id="bestStationName">N/A</strong>
+                producing  
+                <strong class="text-primary" id="bestStationCapacity">N/A</strong>
+                MW from 
+                <strong class="text-primary" id="bestStationCountry">N/A</strong>
+            </p>
+
+            <!-- Melhor país em capacidade -->
+            <p>
+                <strong class="text-primary" id="bestCountry">N/A</strong> 
+                tops the country ranking, with 
+                <strong class="text-primary" id="bestCountryCapacity">N/A</strong> 
+                MW.
+            </p>
+        </div>
+
+        <!-- Proprietários e operadores -->
+        <div class="container-fluid mt-5">
+            <h3>Gathering the effort of 
+            <strong class="text-primary" id="ownerCount">N/A</strong>
+            station owners and 
+            <strong class="text-primary" id="operatorCount">N/A</strong> 
+            station operators.</h3>
+
+            <p>
+                <strong class="text-primary" id="bestOwner">N/A</strong> 
+                leads the way in owner with most solar
+                stations, with <strong class="text-primary" id="bestOwnerCount">N/A</strong> stations
+            </p>
+
+            <p> 
+                <strong class="text-primary" id="bestOperator">N/A</strong> 
+                operates the most solar stations,
+                with 
+                <strong class="text-primary" id="bestOperatorCount">N/A</strong> 
+                stations
+            </p>
+        </div>
+
+        <div class="container-fluid my-5">
+            <h3>Create and activate your account through your email to add your own stations to the world map!</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Executar quando o DOM estiver completamente carregado
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obter os dados das estações solares
+        fetch('/getStations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filters: "" })
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                // Calcular valores estatísticos
+                const stationCount = data.length;
+                let continents = new Set();
+                let countries = new Set();
+                let capacitySum = 0;
+                let bestStation = data[0];
+                let countryCapacities = {};
+                let ownerCountSet = new Set();
+                let operatorCountSet = new Set();
+                let ownerStations = {};
+                let operatorStations = {};
+
+                // Iterar sobre as estações
+                for (let station of data) {
+
+                    station.capacity = parseFloat(station.capacity);
+
+                    // Preencher a lista de continentes e paises
+                    continents.add(station.continent);
+                    countries.add(station.country);
+
+                    // Calcular a soma das capacidades
+                    capacitySum += station.capacity;
+
+                    // Encontrar a melhor estação em capacidade
+                    if (station.capacity > bestStation.capacity) bestStation = station;
+
+                    // Calcular a capacidade total por país
+                    if (!countryCapacities[station.country]) countryCapacities[station.country] = 0;
+                    
+                    // Adicionar a capacidade da estação ao respetivo país
+                    countryCapacities[station.country] += station.capacity;
+
+                    // Contar o número de estações por proprietário e operador
+                    if (station.owner !== "N/A") {
+                        ownerCountSet.add(station.owner);
+                        if (!ownerStations[station.owner]) ownerStations[station.owner] = 0;
+                        ownerStations[station.owner]++;
+                    }
+
+                    if (station.operator !== "N/A") {
+                        operatorCountSet.add(station.operator);
+                        if (!operatorStations[station.operator]) operatorStations[station.operator] = 0;
+                        operatorStations[station.operator]++;
+                    }
+                }
+
+                // Encontrar o país com maior capacidade
+                let bestCountry = { name: "", capacity: 0 };
+                for (let country in countryCapacities) {
+                    if (countryCapacities[country] > bestCountry.capacity) bestCountry = { name: country, capacity: countryCapacities[country] };
+                }
+
+                // Encontrar o proprietário com mais estações
+                let topOwner = { name: "", count: 0 };
+                for (let owner in ownerStations) {
+                    if (ownerStations[owner] > topOwner.count) topOwner = { name: owner, count: ownerStations[owner] };
+                }
+
+                // Encontrar o operador com mais estações
+                let topOperator = { name: "", count: 0 };
+                for (let operator in operatorStations) {
+                    if (operatorStations[operator] > topOperator.count) topOperator = { name: operator, count: operatorStations[operator] };
+                }
+
+                // Preenchendo os valores no HTML
+                document.getElementById("stationCount").textContent = stationCount;
+                document.getElementById("continentCount").textContent = continents.size;
+                document.getElementById("countryCount").textContent = countries.size;
+                document.getElementById("capacitySum").textContent = capacitySum.toFixed(1); // Apenas uma casa decimal
+                document.getElementById("bestStationName").textContent = bestStation.name;
+                document.getElementById("bestStationCapacity").textContent = bestStation.capacity;
+                document.getElementById("bestStationCountry").textContent = bestStation.country;
+                document.getElementById("bestCountry").textContent = bestCountry.name;
+                document.getElementById("bestCountryCapacity").textContent = bestCountry.capacity.toFixed(1); // Apenas uma casa decimal
+                document.getElementById("ownerCount").textContent = ownerCountSet.size; 
+                document.getElementById("operatorCount").textContent = operatorCountSet.size;
+                document.getElementById("bestOwner").textContent = topOwner.name;
+                document.getElementById("bestOwnerCount").textContent = topOwner.count;
+                document.getElementById("bestOperator").textContent = topOperator.name;
+                document.getElementById("bestOperatorCount").textContent = topOperator.count;
+            })
+            .catch(error => {
+                console.error('Error fetching solar data:', error);
+                alert('Error loading solar station data. Please try again later.');
+            });
+    });
+
+
+
+</script>
+{% endblock %}

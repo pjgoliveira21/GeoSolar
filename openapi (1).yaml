@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  title: GeoSolar
+  description: GeoSolar
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:9091/api
+paths:
+  /user:
+    post:
+      tags:
+        - Users
+      summary: Creates a user.
+      description: Create a user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /user/{userId}:
+    get:
+        tags:
+          - user
+        summary: Get User by Id
+        parameters:
+          - in: path
+            name: userId
+            required: true
+            schema:
+              type: integer
+              format: int64
+            description: User id
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/user'
+          '400':
+            description: Invalid ID supplied
+          '404':
+            description: User not found
+          default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/error"
+  /station:
+    post:
+      tags:
+        - Stations
+      summary: Creates a station.
+      description: Create a station.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/station'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/station'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /station/{stationId}:
+    get:
+        tags:
+          - user
+        summary: Get Station by Id
+        parameters:
+          - in: path
+            name: stationId
+            required: true
+            schema:
+              type: integer
+              format: int64
+            description: Station id
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/station'
+          '400':
+            description: Invalid ID supplied
+          '404':
+            description: Station not found
+          default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/error"
+components:
+  schemas:
+    userCreate:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: exampleuser25
+        email:
+          type: string
+          format: email
+          example: example.email@example.com
+        password:
+          type: string
+          format: password
+          example: examplepassword25
+      xml:
+        name: userCreate
+  
+    user:
+      allOf:
+        - $ref: '#/components/schemas/userCreate'
+        - type: object
+          properties:
+            id:
+              type: integer
+              example: 21
+
+    station:
+        type: object
+        required:
+          - country
+          - continent
+          - location
+          - capacity
+        properties:
+          country:
+            type: string
+            example: Portugal
+          continent:
+            type: string
+            example: Europe
+          city:
+            type: string
+            example: Lisboa
+          locationAccuracy:
+            type: string
+            default: approximate
+            enum:
+              - approximate
+              - exact
+          location:
+            type: object
+            properties:
+              latitude:
+                type: number
+                format: float
+                example: -21.21
+              longitude:
+                type: number
+                format: float
+                example: 21.21
+            example: Lisboa
+          capacity:
+            type: number
+            format: float
+            example: 212.21
+          capacityRating:
+            type: string
+            default: unknown
+            enum:
+              - unknown
+              - MW/ac
+              - MWp/dc
+          technologyType:
+            type: string
+            default: unknown
+            enum:
+              - unknown
+              - PV
+              - Solar Thermal
+          status:
+            type: string
+            default: operating
+            enum:
+              - construction
+              - operating
+          startYear:
+            type: number
+            format: int32
+            example: 2025
+          operator:
+            type: string
+            example: EDP Renewables
+          owner:
+            type: string
+            example: Iberdrola
+          wikiUrl:
+            type: string
+            example: https://www.gem.wiki/Setif_solar_farm
+          researchDate:
+            type: string
+            format: date
+            example: 2025-04-26
+        xml:
+          name: station
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message

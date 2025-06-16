@@ -1,0 +1,99 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}Mapa{% endblock %}
+
+<!-- Incluir no cabeçalho da página, em adição ao que está no template base -->
+{% block head %}
+    {{ super() }}
+    <!-- Open Street Maps API 1.9.4 -->
+    <link rel="stylesheet" href="/static/external/leaflet/leaflet.css" />
+    <script src="/static/external/leaflet/leaflet.js"></script>
+    <!-- Leaflet Marker Cluster 1.4.1 -->
+    <link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.css" />
+    <link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.Default.css" />
+    <script src="/static/external/markercluster/leaflet.markercluster.js"></script>
+{% endblock %}
+
+<!-- Conteúdo do template -->
+{% block page %}
+<section id="mapPage" class="m-4">
+    <h3>Worldwide Solar Station Map</h1>
+    <div class="container-fluid">
+
+        <!-- Inclusão do componente filtros do mapa -->
+        <div class="mt-4"> {% include "components/map/filters.html" %}</div>
+
+        <!-- Inclusão do componente mapa -->
+        <div class="pb-5 mt-2"> {% include "components/map/map.html" %}</div>
+    </div>
+</section>
+
+<script type="text/JavaScript">
+        // Executar quando o DOM estiver completamente carregado
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Procurar todos os selects e adicionar um listener para quando o valor mudar, com o objetivo de atualizar os filtros do mapa em tempo real
+            document.querySelectorAll("select.selectpicker").forEach(select => { select.addEventListener("change", getNewStations);});
+            
+            // Adicionar um listener ao checkbox que atualiza também os filtros quando tem o valor mudado
+            if("{{session['activated']}}"== "True") document.getElementById('myStationsCheckbox').addEventListener('change', getNewStations);
+
+            //Inicialização inicial o mapa 
+            const mapDiv = document.getElementById('map');
+            if (mapDiv) initMapa();
+
+            // Obter as estações iniciais
+            getNewStations();
+        });
+
+        // Gerar o url de chamada ao servidor com base nos filtros selecionados
+        const queryFromFilters = () => {
+            let query = "";
+
+            // Para cada select, obter o nome do campo e os valores selecionados
+            document.querySelectorAll("select.selectpicker").forEach(select => {
+                const fieldName = select.id;
+
+                // Obter os valores selecionados de cada filtro 
+                const selectedOptions = Array.from(select.selectedOptions).map(option => option.value);
+                if (selectedOptions.length > 0) query += `${fieldName}=${selectedOptions.join(",")}&`}
+            );
+            // Remove o último '&' da query
+            query = query.slice(0, -1);
+
+            // Aqui é possivel ser retornada uma string vazia, neste caso o servidor irá retornar todas as estações
+            return query;
+        };
+
+        // Pedir novas estações ao servidor com base nos filtros selecionados no momento da chamada da função
+        const getNewStations = () => {
+
+            // Gerar a query com base nos filtros selecionados
+            query=queryFromFilters();
+
+            // Verificar se o utilizador selecionou a checkbox para mostrar as suas estações no mapa
+            let showMyStations = false;
+            // Apenas se o utilizador estiver autenticado, o valor do checkbox é relevante
+            if("{{session['activated']}}"== "True") showMyStations = document.getElementById('myStationsCheckbox').checked;
+
+            // Pedir ao servidor as estações com base nos filtros selecionados, enviando a query como argumento e o valor do checkbox
+            fetch('/getStations', { method: 'POST', headers: { 'Content-Type': 'application/json'}, body: JSON.stringify({ filters: query, showMyStations: showMyStations })})
+            .then(response => { 
+                if (!response.ok) throw new Error('An error occurred while fetching the data');
+                return response.json();
+            })
+
+            // Atualizar o mapa com as novas estações (map.js)
+            .then(data => { 
+                // Atualizar o contador de estações carregadas
+                document.getElementById('stationCount').innerHTML = `Loaded stations counter: ${data.length}`;
+
+                // Atualizar os marcadores no mapa
+                setMarkers(data);
+            })
+            .catch(error => { console.error('An error ocurred: ', error);});
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<!-- Menu de utilizador -->
+<div class="nav-item dropdown d-flex me-3 align-items-center">
+
+    <!-- Indicativo do utilizador com sessão iniciada -->
+    <span class="text-light me-4">Logged as {{session['email']}}</span>
+
+    <!-- Avatar -->
+    <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <img src="../../../static/images/avatar.png" alt="User Avatar" class="rounded-circle" width="45" height="45">
+    </a>
+
+    <!-- Menu de opções -->
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+        <!-- Mostrar a opção de adicionar estações desativada para um utilizador sem sessão -->
+        {% if session['activated'] %}
+        <li><a class="dropdown-item" data-bs-toggle="modal" href="#addStationModal">Add My Station</a></li>
+        {% else %}
+        <li class="dropdown-item disabled">Add My Station</li>
+        {% endif %}
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+    </ul>
+
+    <!-- Inlcuir o Pop-up que contém o formulário de adicionar estação, acionado pelo href #addStationModel-->
+    {% include "components/addStationModal.html" %}
+</div>

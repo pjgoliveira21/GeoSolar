@@ -1,0 +1,278 @@
+openapi: 3.0.0
+info:
+  title: GeoSolar
+  description: GeoSolar
+  version: 1.0.0
+servers:
+- url: http://localhost:5001/
+paths:
+  /user:
+    post:
+      tags:
+      - Users
+      summary: Creates a user.
+      description: Create a user.
+      operationId: user_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userCreate"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /user/{userId}:
+    get:
+      tags:
+      - Users
+      summary: Get User by Id
+      operationId: user_user_id_get
+      parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /station:
+    post:
+      tags:
+      - Stations
+      summary: Creates a station.
+      description: Create a station.
+      operationId: station_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/station"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/station"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+  /station/{stationId}:
+    get:
+      tags:
+      - Stations
+      summary: Get Station by Id
+      operationId: station_station_id_get
+      parameters:
+      - name: stationId
+        in: path
+        description: Station id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/station"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Station not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+components:
+  schemas:
+    userCreate:
+      required:
+      - email
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          example: exampleuser25
+        email:
+          type: string
+          format: email
+          example: example.email@example.com
+        password:
+          type: string
+          format: password
+          example: examplepassword25
+      xml:
+        name: userCreate
+    user:
+      allOf:
+      - $ref: "#/components/schemas/userCreate"
+      - type: object
+        properties:
+          id:
+            type: integer
+            example: 21
+    station:
+      required:
+      - capacity
+      - continent
+      - country
+      - location
+      type: object
+      properties:
+        country:
+          type: string
+          example: Portugal
+        continent:
+          type: string
+          example: Europe
+        city:
+          type: string
+          example: Lisboa
+        locationAccuracy:
+          type: string
+          default: approximate
+          enum:
+          - approximate
+          - exact
+        location:
+          $ref: "#/components/schemas/station_location"
+        capacity:
+          type: number
+          format: float
+          example: 212.21
+        capacityRating:
+          type: string
+          default: unknown
+          enum:
+          - unknown
+          - MW/ac
+          - MWp/dc
+        technologyType:
+          type: string
+          default: unknown
+          enum:
+          - unknown
+          - PV
+          - Solar Thermal
+        status:
+          type: string
+          default: operating
+          enum:
+          - construction
+          - operating
+        startYear:
+          type: number
+          format: int32
+          example: 2025
+        operator:
+          type: string
+          example: EDP Renewables
+        owner:
+          type: string
+          example: Iberdrola
+        wikiUrl:
+          type: string
+          example: https://www.gem.wiki/Setif_solar_farm
+        researchDate:
+          type: string
+          format: date
+          example: 2025-04-26
+      example:
+        continent: Europe
+        locationAccuracy: approximate
+        capacityRating: unknown
+        owner: Iberdrola
+        country: Portugal
+        city: Lisboa
+        technologyType: unknown
+        startYear: 2025
+        operator: EDP Renewables
+        capacity: 212.21
+        wikiUrl: https://www.gem.wiki/Setif_solar_farm
+        location: Lisboa
+        researchDate: 2025-04-26T00:00:00.000+00:00
+        status: operating
+      xml:
+        name: station
+    error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    station_location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: float
+          example: -21.21
+        longitude:
+          type: number
+          format: float
+          example: 21.21
+      example: Lisboa
+
