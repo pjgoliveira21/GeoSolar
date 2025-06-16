@@ -73,8 +73,8 @@ def sendConfMail(dest, mail):
 
 # Definição das expressões regulares
 regex_patterns = {
-    "email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-    "pwd": r"^(?=.*\d)[a-zA-Z\d]{4,8}$"
+    "email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", #Formato padrão de email teste@teste.com
+    "pwd": r"^(?=.*\d)[a-zA-Z\d]{4,8}$" # 4 a 8 caracteres e pelo menos 1 número
 }
 
 # Função para ler ficheiros JSO

@@ -173,11 +173,14 @@ components:
     station:
       required:
       - capacity
-      - continent
-      - country
-      - location
+      - name
+      - latitude
+      - longitude
       type: object
       properties:
+        id:
+          type: integer
+          example: 21
         country:
           type: string
           example: Portugal
@@ -193,8 +196,17 @@ components:
           enum:
           - approximate
           - exact
-        location:
-          $ref: "#/components/schemas/station_location"
+        latitude:
+          type: number
+          format: float
+          example: -21.544
+        longitude:
+          type: number
+          format: float
+          example: 21.467
+        name:
+          type: string
+          default: Pulida Solar Park
         capacity:
           type: number
           format: float
@@ -237,6 +249,7 @@ components:
           format: date
           example: 2025-04-26
       example:
+        name: Setif Solar Farm
         continent: Europe
         locationAccuracy: approximate
         capacityRating: unknown
@@ -248,7 +261,8 @@ components:
         operator: EDP Renewables
         capacity: 212.21
         wikiUrl: https://www.gem.wiki/Setif_solar_farm
-        location: Lisboa
+        latitude: -21.544
+        longitude: 21.467
         researchDate: 2025-04-26T00:00:00.000+00:00
         status: operating
       xml:
@@ -263,16 +277,4 @@ components:
           type: string
         message:
           type: string
-    station_location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: float
-          example: -21.21
-        longitude:
-          type: number
-          format: float
-          example: 21.21
-      example: Lisboa
 

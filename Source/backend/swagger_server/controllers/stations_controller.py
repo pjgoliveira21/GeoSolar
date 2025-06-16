@@ -7,17 +7,55 @@ from swagger_server.db.session import stationsTable
 def station_post(body):  # noqa: E501
     """Creates a station."""
     if connexion.request.is_json:
-        body = Station.from_dict(connexion.request.get_json())  # objeto com name, lat, lon, etc.
+        # Campos que vamos aceitar, obrigatórios + opcionais do schema
+    
+        allowed_fields = {
+            'capacity': 'capacity_mw',
+            'name': 'name',
+            'latitude': 'latitude',
+            'longitude': 'longitude',
+            'id': 'id',
+            'country': 'country',
+            'continent': 'continent',
+            'city': 'city',
+            'locationAccuracy': 'locationAccuracy',
+            'capacityRating': 'capacityRating',
+            'technologyType': 'technologyType',
+            'status': 'status',
+            'startYear': 'startYear',
+            'operator': 'operator',
+            'owner': 'owner',
+            'wikiUrl': 'wikiUrl',
+            'researchDate': 'researchDate'
+        }
+
+        # Construir colunas e valores para o insert só com os campos presentes no JSON
+        columns = []
+        placeholders = []
+        values = {}
+        data = connexion.request.get_json()
+
+        for key, col_name in allowed_fields.items():
+            if key in data and data[key] is not None:
+                columns.append(col_name)
+                placeholders.append(f":{col_name}")
+                values[col_name] = data[key]
+
+        # columns = ['name', 'latitude', 'longitude', 'capacity', 'country', ...]
+        # placeholders = [':name', ':latitude', ':longitude', ':capacity', ':country', ...]
+        # values = {'name': ..., 'latitude': ..., 'capacity': ..., 'country': ...}
+
+        sql = f"INSERT INTO {stationsTable} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
 
         try:
             db = SessionLocalStationsDB()
-            sql= f"INSERT INTO {stationsTable} (name, latitude, longitude) VALUES (:name, :lat, :lon)"
-            db.execute(sql,{"name": body.name, "lat": body.lat, "lon": body.lon})
+            db.execute(sql, values)
             db.commit()
             db.close()
-            return body, 201
+            data = Station.from_dict(connexion.request.get_json())
+            return data, 201
 
-        except OperationalError as e:
+        except OperationalError:
             return Error(code=503, message="Database not available"), 503
 
     return Error(code=400, message="Invalid input"), 400
@@ -33,9 +71,7 @@ def station_station_id_get(station_id):  # noqa: E501
 
         if row is None: return Error(code=404, message="Station not found"), 404
 
-        # Simulando um objeto Station com base em resultado SQL (ajusta conforme modelo Swagger)
-        print(row)
-        station = Station(country=row.country, continent=row.continent, city=row.city)
+        station = Station(id=row.id,country=row.country, continent=row.continent, city=row.city)
         return station, 200
 
     except OperationalError as e:

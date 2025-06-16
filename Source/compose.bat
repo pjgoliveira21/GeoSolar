@@ -1,2 +1,2 @@
-docker compose -p tpf1 up -d 
+docker compose -p geosolar up -d 
 pause

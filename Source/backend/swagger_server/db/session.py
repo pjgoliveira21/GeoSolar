@@ -12,3 +12,4 @@ stationsTable="solar_power_stations"
 USERS_DB_URL = os.getenv("USERS_DB_URL")
 engine_users_db = create_engine(USERS_DB_URL)
 SessionLocalUsersDB = sessionmaker(bind=engine_users_db)
+usersTable="users"

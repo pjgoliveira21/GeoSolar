@@ -39,8 +39,8 @@ ALTER ROLE root WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYP
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -68,8 +68,8 @@ SET row_security = off;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -95,8 +95,8 @@ SET row_security = off;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -143,9 +143,9 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    full_name character varying(100) NOT NULL,
+    username character varying(100) NOT NULL,
     email character varying(100) NOT NULL,
-    password_hash text NOT NULL,
+    password text NOT NULL,
     is_active boolean DEFAULT true,
     last_login timestamp without time zone,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -188,9 +188,10 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: root
 --
 
-COPY public.users (id, full_name, email, password_hash, is_active, last_login, created_at, updated_at) FROM stdin;
+COPY public.users (id, username, email, password, is_active, last_login, created_at, updated_at) FROM stdin;
 1	plynyo	plynyo@gmail.com	345fggf	t	\N	2025-04-18 18:50:51.885559	2025-04-18 18:50:51.885559
 3	plynyo	plyny22o@gmail.com	345fggf	t	\N	2025-04-18 18:51:17.340475	2025-04-18 18:51:17.340475
+4	pilininio	bemloco@gmail.com	ewe123	t	\N	2025-06-16 17:27:47.327486	2025-06-16 17:27:47.327486
 \.
 
 
@@ -198,7 +199,7 @@ COPY public.users (id, full_name, email, password_hash, is_active, last_login, c
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 3, true);
+SELECT pg_catalog.setval('public.users_id_seq', 4, true);
 
 
 --

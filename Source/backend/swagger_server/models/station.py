@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.station_location import StationLocation  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,9 +14,11 @@ class Station(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, country: str=None, continent: str=None, city: str=None, location_accuracy: str='approximate', location: StationLocation=None, capacity: float=None, capacity_rating: str='unknown', technology_type: str='unknown', status: str='operating', start_year: float=None, operator: str=None, owner: str=None, wiki_url: str=None, research_date: date=None):  # noqa: E501
+    def __init__(self, id: int=None, country: str=None, continent: str=None, city: str=None, location_accuracy: str='approximate', latitude: float=None, longitude: float=None, name: str='Pulida Solar Park', capacity: float=None, capacity_rating: str='unknown', technology_type: str='unknown', status: str='operating', start_year: float=None, operator: str=None, owner: str=None, wiki_url: str=None, research_date: date=None):  # noqa: E501
         """Station - a model defined in Swagger
 
+        :param id: The id of this Station.  # noqa: E501
+        :type id: int
         :param country: The country of this Station.  # noqa: E501
         :type country: str
         :param continent: The continent of this Station.  # noqa: E501
@@ -26,8 +27,12 @@ class Station(Model):
         :type city: str
         :param location_accuracy: The location_accuracy of this Station.  # noqa: E501
         :type location_accuracy: str
-        :param location: The location of this Station.  # noqa: E501
-        :type location: StationLocation
+        :param latitude: The latitude of this Station.  # noqa: E501
+        :type latitude: float
+        :param longitude: The longitude of this Station.  # noqa: E501
+        :type longitude: float
+        :param name: The name of this Station.  # noqa: E501
+        :type name: str
         :param capacity: The capacity of this Station.  # noqa: E501
         :type capacity: float
         :param capacity_rating: The capacity_rating of this Station.  # noqa: E501
@@ -48,11 +53,14 @@ class Station(Model):
         :type research_date: date
         """
         self.swagger_types = {
+            'id': int,
             'country': str,
             'continent': str,
             'city': str,
             'location_accuracy': str,
-            'location': StationLocation,
+            'latitude': float,
+            'longitude': float,
+            'name': str,
             'capacity': float,
             'capacity_rating': str,
             'technology_type': str,
@@ -65,11 +73,14 @@ class Station(Model):
         }
 
         self.attribute_map = {
+            'id': 'id',
             'country': 'country',
             'continent': 'continent',
             'city': 'city',
             'location_accuracy': 'locationAccuracy',
-            'location': 'location',
+            'latitude': 'latitude',
+            'longitude': 'longitude',
+            'name': 'name',
             'capacity': 'capacity',
             'capacity_rating': 'capacityRating',
             'technology_type': 'technologyType',
@@ -80,11 +91,14 @@ class Station(Model):
             'wiki_url': 'wikiUrl',
             'research_date': 'researchDate'
         }
+        self._id = id
         self._country = country
         self._continent = continent
         self._city = city
         self._location_accuracy = location_accuracy
-        self._location = location
+        self._latitude = latitude
+        self._longitude = longitude
+        self._name = name
         self._capacity = capacity
         self._capacity_rating = capacity_rating
         self._technology_type = technology_type
@@ -107,6 +121,27 @@ class Station(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
+    def id(self) -> int:
+        """Gets the id of this Station.
+
+
+        :return: The id of this Station.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int):
+        """Sets the id of this Station.
+
+
+        :param id: The id of this Station.
+        :type id: int
+        """
+
+        self._id = id
+
+    @property
     def country(self) -> str:
         """Gets the country of this Station.
 
@@ -124,8 +159,6 @@ class Station(Model):
         :param country: The country of this Station.
         :type country: str
         """
-        if country is None:
-            raise ValueError("Invalid value for `country`, must not be `None`")  # noqa: E501
 
         self._country = country
 
@@ -147,8 +180,6 @@ class Station(Model):
         :param continent: The continent of this Station.
         :type continent: str
         """
-        if continent is None:
-            raise ValueError("Invalid value for `continent`, must not be `None`")  # noqa: E501
 
         self._continent = continent
 
@@ -201,27 +232,69 @@ class Station(Model):
         self._location_accuracy = location_accuracy
 
     @property
-    def location(self) -> StationLocation:
-        """Gets the location of this Station.
+    def latitude(self) -> float:
+        """Gets the latitude of this Station.
 
 
-        :return: The location of this Station.
-        :rtype: StationLocation
+        :return: The latitude of this Station.
+        :rtype: float
         """
-        return self._location
+        return self._latitude
 
-    @location.setter
-    def location(self, location: StationLocation):
-        """Sets the location of this Station.
+    @latitude.setter
+    def latitude(self, latitude: float):
+        """Sets the latitude of this Station.
 
 
-        :param location: The location of this Station.
-        :type location: StationLocation
+        :param latitude: The latitude of this Station.
+        :type latitude: float
         """
-        if location is None:
-            raise ValueError("Invalid value for `location`, must not be `None`")  # noqa: E501
 
-        self._location = location
+        self._latitude = latitude
+
+    @property
+    def longitude(self) -> float:
+        """Gets the longitude of this Station.
+
+
+        :return: The longitude of this Station.
+        :rtype: float
+        """
+        return self._longitude
+
+    @longitude.setter
+    def longitude(self, longitude: float):
+        """Sets the longitude of this Station.
+
+
+        :param longitude: The longitude of this Station.
+        :type longitude: float
+        """
+
+        self._longitude = longitude
+
+    @property
+    def name(self) -> str:
+        """Gets the name of this Station.
+
+
+        :return: The name of this Station.
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this Station.
+
+
+        :param name: The name of this Station.
+        :type name: str
+        """
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+
+        self._name = name
 
     @property
     def capacity(self) -> float:
