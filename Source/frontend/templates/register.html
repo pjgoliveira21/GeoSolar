@@ -1,0 +1,24 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+{% block head %}
+<!-- Importar o CSS específico para este template -->
+<link rel="stylesheet" href="/static/styles/register.css">
+{% endblock %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}Create Account{% endblock %}
+{% block page %}
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form method="POST" action="/register">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+{% endblock %}

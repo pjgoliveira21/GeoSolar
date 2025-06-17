@@ -11,7 +11,7 @@ const iconSize = 40;
 const defaultZoom = 7;
 const popupOptions = { maxWidth: 400 };
 
-const optionsIcon = { iconUrl: "static/images/pin.png", iconSize: [iconSize, iconSize] };
+const optionsIcon = { iconUrl: "../static/images/pin.png", iconSize: [iconSize, iconSize] };
 
 const defaultMapOptions = { center: [defaultLatPosition, defaultLngPosition], zoom: defaultZoom, maxBoundsViscosity: 0.7, minZoom: 3 };
 
@@ -21,7 +21,7 @@ export function initMapa() {
   theMap = new L.map(document.getElementById("map"), defaultMapOptions);
 
   // Adição de camada de mapa base
-  let mainMap = new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+  let mainMap = new L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
   theMap.addLayer(mainMap);
 
   // Determinar os limites do mapa
@@ -66,7 +66,7 @@ export function setMarkers(data) {
         // Se a estação tiver o campo img definido como sat ou tiver o campo nulo, usar a API do Google Maps para obter a imagem
         // Caso contrário, usar a imagem fornecida
         station["img"] === "sat" || station["img"] === undefined
-          ? `https://maps.googleapis.com/maps/api/staticmap?center=${station["latitude"]},${station["longitude"]}&zoom=18&size=400x400&maptype=satellite&key=AIzaSyAUVVbXkcy-8bMcMZTULAJwCek2awh2NrU`
+          ? `https://maps.googleapis.com/maps/api/staticmap?center=${station["latitude"]},${station["longitude"]}&zoom=18&size=400x400&maptype=satellite&key=AIzaSyBD6RsdK-8q5WIQGwkiZ6R1pfXTwiWvn2M`
           : "/static/images/stations/"+station["img"]
       }" alt="Station image">
       <div class="card-body">

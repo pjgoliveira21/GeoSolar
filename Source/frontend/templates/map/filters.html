@@ -1,0 +1,71 @@
+<h3>Filtros</h3>
+
+<!-- Campo de pesquisa por nome -->
+<label for="nome">Nome:</label>
+<input type="text" id="nome" name="nome" placeholder="Pesquisar por nome" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px; border: none;">
+
+<!-- País -->
+<label for="pais">País:</label>
+<select id="pais" name="pais" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px;">
+  <option value="">Todos</option>
+  <option value="Portugal">Portugal</option>
+  <option value="Espanha">Espanha</option>
+  <option value="Brasil">Brasil</option>
+</select>
+
+<!-- Continente -->
+<label for="continente">Continente:</label>
+<select id="continente" name="continente" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px;">
+  <option value="">Todos</option>
+  <option value="Europa">Europa</option>
+  <option value="América">América</option>
+  <option value="África">África</option>
+  <!-- ... -->
+</select>
+
+<!-- Cidade -->
+<label for="cidade">Cidade:</label>
+<select id="cidade" name="cidade" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px;">
+  <option value="">Todas</option>
+  <option value="Lisboa">Lisboa</option>
+  <option value="Madrid">Madrid</option>
+  <option value="São Paulo">São Paulo</option>
+</select>
+
+<!-- Capacidade -->
+<label for="capacidade">Capacidade:</label>
+<select id="capacidade" name="capacidade" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px;">
+  <option value="">Qualquer</option>
+  <option value="pequena">Pequena</option>
+  <option value="média">Média</option>
+  <option value="grande">Grande</option>
+</select>
+
+<!-- Estado -->
+<label for="estado">Estado:</label>
+<select id="estado" name="estado" style="width: 100%; padding: 6px; margin-bottom: 12px; border-radius: 6px;">
+  <option value="">Todos</option>
+  <option value="ativo">Ativo</option>
+  <option value="inativo">Inativo</option>
+  <option value="em manutenção">Em manutenção</option>
+</select>
+
+<!-- Botão opcional para obter os filtros em string -->
+<button onclick="obterFiltros()" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background-color: #1e40af; color: white; font-weight: bold;">
+  Aplicar Filtros
+</button>
+
+<script>
+  function obterFiltros() {
+    const nome = document.getElementById('nome').value;
+    const pais = document.getElementById('pais').value;
+    const continente = document.getElementById('continente').value;
+    const cidade = document.getElementById('cidade').value;
+    const capacidade = document.getElementById('capacidade').value;
+    const estado = document.getElementById('estado').value;
+
+    const filtros = [nome, pais, continente, cidade, capacidade, estado, limite]
+      .filter(v => v !== "")
+      .join(", ");
+  }
+</script>
