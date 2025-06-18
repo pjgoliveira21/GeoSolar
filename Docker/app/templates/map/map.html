@@ -1,0 +1,61 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}World Map{% endblock %}
+
+<!-- Incluir no cabeçalho da página, em adição ao que está no template base -->
+{% block head %}
+{{ super() }}
+<!-- Open Street Maps API 1.9.4 -->
+<link rel="stylesheet" href="/static/external/leaflet/leaflet.css" />
+<script src="/static/external/leaflet/leaflet.js"></script>
+<!-- Leaflet Marker Cluster 1.4.1 -->
+<link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.css" />
+<link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.Default.css" />
+<script src="/static/external/markercluster/leaflet.markercluster.js"></script>
+
+<link rel="stylesheet" href="/static/styles/map.css">
+{% endblock %}
+{% block page %}
+
+<body>
+  <div id="map"></div>
+
+  <!-- Loader Overlay -->
+  <div id="loading-overlay" class="">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    const loader = document.getElementById('loading-overlay');
+
+    // Executar quando o DOM estiver completamente carregado
+    document.addEventListener('DOMContentLoaded', () => {
+      //Inicialização inicial o mapa 
+      const mapDiv = document.getElementById('map');
+      if (mapDiv) initMapa();
+
+      // Obter as estações iniciais
+      getNewStations();
+
+      if ("{{tL}}" && "{{tLg}}") {
+        // Se as coordenadas de destino forem fornecidas, centralizar o mapa nessas coordenadas
+        const targetLat = parseFloat("{{tL}}");
+        const targetLng = parseFloat("{{tLg}}");
+        if (!isNaN(targetLat) && !isNaN(targetLng)) {
+          moveToTarget(targetLat, targetLng);
+        }
+      }
+    });
+
+    // Pedir novas estações ao servidor com base nos filtros selecionados no momento da chamada da função
+    async function getNewStations() {
+      const response = await fetch(`/getStations`);
+      const stations = await response.json();
+      setMarkers(stations);
+      loader.classList.add('hidden');
+    }
+  </script>
+</body>
+{% endblock %}

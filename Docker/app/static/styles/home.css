@@ -1,0 +1,56 @@
+body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: white;
+    }
+    .wrapper {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      background-color: white;
+    }
+    .diagonal-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 100%;
+      background-image: url("/static/images/solar.jpg");
+      background-size: cover;
+      background-position: center;
+      transform: skewX(-12deg);
+      z-index: 1;
+    }
+    .overlay {
+      position: absolute;
+      width: 40%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.25);
+      transform: skewX(-12deg);
+      z-index: 2;
+    }
+    .content {
+      margin-left: 50%;
+      width: 50%;
+      padding: 4rem 2rem;
+      z-index: 3;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-top: 60px;
+      color: #1e293b;
+    }
+    .content h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #0f172a;
+    }
+    .content p {
+      font-size: 1.2rem;
+      color: #334155;
+    }
