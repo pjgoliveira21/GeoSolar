@@ -146,7 +146,7 @@ CREATE TABLE public.users (
     username character varying(100) NOT NULL,
     email character varying(100) NOT NULL,
     password text NOT NULL,
-    is_active boolean DEFAULT true,
+    is_active boolean DEFAULT false,
     last_login timestamp without time zone,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
@@ -189,9 +189,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.users (id, username, email, password, is_active, last_login, created_at, updated_at) FROM stdin;
-1	plynyo	plynyo@gmail.com	345fggf	t	\N	2025-04-18 18:50:51.885559	2025-04-18 18:50:51.885559
-3	plynyo	plyny22o@gmail.com	345fggf	t	\N	2025-04-18 18:51:17.340475	2025-04-18 18:51:17.340475
-4	pilininio	bemloco@gmail.com	ewe123	t	\N	2025-06-16 17:27:47.327486	2025-06-16 17:27:47.327486
 \.
 
 
@@ -199,7 +196,7 @@ COPY public.users (id, username, email, password, is_active, last_login, created
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, true);
 
 
 --
