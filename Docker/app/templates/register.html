@@ -9,15 +9,36 @@
 <!-- Determinar o titulo para quando este template está a ser utilizado -->
 {% block title %}Create Account{% endblock %}
 {% block page %}
+
 <body>
     <div class="container">
         <h2>Register</h2>
-        <form method="POST" action="/register">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
-            <button type="submit">Register</button>
+        <form method="POST" action="/actionRegister" style="display: grid;">
+
+            <input type="text" id="username" name="username" required placeholder="Username">
+
+            <div style="display: flex; align-items: baseline;">
+                
+                <input type="email" id="email" aria-describedby="emailHelpInline" name="email" required
+                    placeholder="Email Address">
+                <span style="margin-left:10px" id="emailHelpInline">e.g example@example.com</span>
+            </div>
+
+            <div style="display: flex; align-items: baseline;">
+                
+                <input type="password" id="password" aria-describedby="passwordHelpInline" name="password" required
+                    placeholder="Password">
+                <span style="margin-left:10px" id="passwordHelpInline">Minimum 6 characters</span>
+            </div>
+
+            <div style="display: flex; align-items: baseline;">
+                
+                <input type="password" id="confirmPassword" aria-describedby="confirmPasswordHelpInline"
+                    name="confirmPassword" required placeholder="Confirm Password">
+                <span style="margin-left:10px" id="confirmPasswordHelpInline">Just making sure..</span>
+            </div>
+
+            <button type="submit">Create Account</button>
         </form>
     </div>
 </body>

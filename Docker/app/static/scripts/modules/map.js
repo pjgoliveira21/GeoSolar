@@ -11,7 +11,8 @@ const iconSize = 40;
 const defaultZoom = 7;
 const popupOptions = { maxWidth: 400 };
 
-const optionsIcon = { iconUrl: "../static/images/pin.png", iconSize: [iconSize, iconSize] };
+const stationIcon = { iconUrl: "../static/images/pin.png", iconSize: [iconSize, iconSize] };
+const IotIcon = { iconUrl: "../static/images/iotpin.png", iconSize: [iconSize, iconSize] };
 
 const defaultMapOptions = { center: [defaultLatPosition, defaultLngPosition], zoom: defaultZoom, maxBoundsViscosity: 0.7, minZoom: 3 };
 
@@ -51,19 +52,19 @@ export function moveToTarget(lat, lng) {
 }
 
 // Função para substituir os marcadores com novos a partir dos dados recebidos
-export function setMarkers(data) {
+export function setMarkers(stationData, IoTData) {
 
   // Limpar marcadores existentes
   theMap.removeLayer(markers)
   markers.clearLayers();
 
   // Por cada objeto de dados, criar um marcador
-  data.forEach(station => {
+  stationData.forEach(station => {
 
     // Propriedades do marcador
     const marker = {
       title: station["id"],
-      icon: L.icon(optionsIcon),
+      icon: L.icon(stationIcon),
     };
 
     // Criação do marcador
@@ -84,7 +85,7 @@ export function setMarkers(data) {
         <p class="card-text">${station["country"]}, ${station["continent"]}</p>
         <p class="card-text">Capacity: ${station["capacity"]} MW</p>
         ${station["img"] ? "" :
-        `<a href="${station["url"]}" class="btn btn-primary text-light">More Info</a>`
+        `<a href="${station["wikiUrl"]}" class="btn btn-primary text-light">More Info</a>`
       }
         
       </div>
@@ -99,6 +100,45 @@ export function setMarkers(data) {
     markers.addLayer(pin);
 
   });
+  // Se houver dados de IoT, adicionar marcadores de IoT
+  if (IoTData) {
+    IoTData.forEach(iot => {
+      // Propriedades do marcador de IoT
+      const iotMarker = {
+        title: iot["id"],
+        icon: L.icon(IotIcon),
+      };
+
+      // Criação do marcador de IoT
+      let iotPin = new L.Marker([iot['position']["latitude"], iot['position']["longitude"]], iotMarker);
+
+      // Conteúdo HTML do popup para o marcador de IoT
+      let iotPopupContent = `
+      <div class="card" style="width: 13rem;">
+        ${iot['image_url'] ? `<img class="img-fluid" src="${iot['image_url']}" alt="IoT image">` : ''}
+        <div class="card-body">
+          <h5 class="card-title">Dispositivo IOT</h5>
+          ${Object.entries(iot).map(([key, value]) => {
+        if (typeof value === 'object' && value !== null) {
+          return `<p><strong>${key}:</strong></p>` +
+            Object.entries(value).map(
+          ([subKey, subValue]) => `<p style="margin-left:1em;"><strong>${subKey}:</strong> ${subValue}</p>`
+            ).join('');
+        } else {
+          return `<p><strong>${key}:</strong> ${value}</p>`;
+        }
+          }).join('')}
+        </div>
+      </div>
+      `;
+
+      // Associar o popup ao marcador de IoT
+      iotPin.bindPopup(iotPopupContent, popupOptions);
+
+      // Adicionar o marcador de IoT ao grupo de marcadores
+      markers.addLayer(iotPin);
+    });
+  }
 
   // No fim, adicionar o novo grupo de marcadores ao mapa
   theMap.addLayer(markers);

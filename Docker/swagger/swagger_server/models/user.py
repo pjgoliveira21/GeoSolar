@@ -15,11 +15,19 @@ class User(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: int=None, username: str=None, email: str=None, password: str=None):  # noqa: E501
+    def __init__(self, id: int=None, is_active: bool=None, last_login: datetime=None, created_at: datetime=None, updated_at: datetime=None, username: str=None, email: str=None, password: str=None):  # noqa: E501
         """User - a model defined in Swagger
 
         :param id: The id of this User.  # noqa: E501
         :type id: int
+        :param is_active: The is_active of this User.  # noqa: E501
+        :type is_active: bool
+        :param last_login: The last_login of this User.  # noqa: E501
+        :type last_login: datetime
+        :param created_at: The created_at of this User.  # noqa: E501
+        :type created_at: datetime
+        :param updated_at: The updated_at of this User.  # noqa: E501
+        :type updated_at: datetime
         :param username: The username of this User.  # noqa: E501
         :type username: str
         :param email: The email of this User.  # noqa: E501
@@ -29,6 +37,10 @@ class User(Model):
         """
         self.swagger_types = {
             'id': int,
+            'is_active': bool,
+            'last_login': datetime,
+            'created_at': datetime,
+            'updated_at': datetime,
             'username': str,
             'email': str,
             'password': str
@@ -36,11 +48,19 @@ class User(Model):
 
         self.attribute_map = {
             'id': 'id',
+            'is_active': 'is_active',
+            'last_login': 'last_login',
+            'created_at': 'created_at',
+            'updated_at': 'updated_at',
             'username': 'username',
             'email': 'email',
             'password': 'password'
         }
         self._id = id
+        self._is_active = is_active
+        self._last_login = last_login
+        self._created_at = created_at
+        self._updated_at = updated_at
         self._username = username
         self._email = email
         self._password = password
@@ -76,6 +96,90 @@ class User(Model):
         """
 
         self._id = id
+
+    @property
+    def is_active(self) -> bool:
+        """Gets the is_active of this User.
+
+
+        :return: The is_active of this User.
+        :rtype: bool
+        """
+        return self._is_active
+
+    @is_active.setter
+    def is_active(self, is_active: bool):
+        """Sets the is_active of this User.
+
+
+        :param is_active: The is_active of this User.
+        :type is_active: bool
+        """
+
+        self._is_active = is_active
+
+    @property
+    def last_login(self) -> datetime:
+        """Gets the last_login of this User.
+
+
+        :return: The last_login of this User.
+        :rtype: datetime
+        """
+        return self._last_login
+
+    @last_login.setter
+    def last_login(self, last_login: datetime):
+        """Sets the last_login of this User.
+
+
+        :param last_login: The last_login of this User.
+        :type last_login: datetime
+        """
+
+        self._last_login = last_login
+
+    @property
+    def created_at(self) -> datetime:
+        """Gets the created_at of this User.
+
+
+        :return: The created_at of this User.
+        :rtype: datetime
+        """
+        return self._created_at
+
+    @created_at.setter
+    def created_at(self, created_at: datetime):
+        """Sets the created_at of this User.
+
+
+        :param created_at: The created_at of this User.
+        :type created_at: datetime
+        """
+
+        self._created_at = created_at
+
+    @property
+    def updated_at(self) -> datetime:
+        """Gets the updated_at of this User.
+
+
+        :return: The updated_at of this User.
+        :rtype: datetime
+        """
+        return self._updated_at
+
+    @updated_at.setter
+    def updated_at(self, updated_at: datetime):
+        """Sets the updated_at of this User.
+
+
+        :param updated_at: The updated_at of this User.
+        :type updated_at: datetime
+        """
+
+        self._updated_at = updated_at
 
     @property
     def username(self) -> str:

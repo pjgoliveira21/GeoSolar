@@ -10,15 +10,24 @@
 {% block title %}Log In{% endblock %}
 
 {% block page %}
+
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+        <form method="POST" action="/actionLogin">
+
+            <div style="display: flex; align-items: baseline;">
+
+                <input type="email" id="email" aria-describedby="emailHelpInline" name="email" required
+                    placeholder="Email Address">
+                <span style="margin-left:10px" id="emailHelpInline">e.g example@example.com</span>
+            </div>
+
+            <input type="password" id="password" name="password" required placeholder="Password">
             <button type="submit">Login</button>
         </form>
     </div>
 </body>
 {% endblock %}
+
 </html>

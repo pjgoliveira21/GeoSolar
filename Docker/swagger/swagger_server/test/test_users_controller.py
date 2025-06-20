@@ -5,10 +5,10 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
+from swagger_server.models.create_user import CreateUser  # noqa: E501
 from swagger_server.models.error import Error  # noqa: E501
-from swagger_server.models.user import User  # noqa: E501
-from swagger_server.models.user_create import UserCreate  # noqa: E501
-from swagger_server.models.user_user_id_body import UserUserIdBody  # noqa: E501
+from swagger_server.models.patch_user import PatchUser  # noqa: E501
+from swagger_server.models.response_user import ResponseUser  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
@@ -20,12 +20,23 @@ class TestUsersController(BaseTestCase):
 
         Creates a user.
         """
-        body = UserCreate()
+        body = CreateUser()
         response = self.client.open(
-            '//user',
+            '/api/v1//users',
             method='POST',
             data=json.dumps(body),
             content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_delete_user_by_email(self):
+        """Test case for delete_user_by_email
+
+        Delete User by Email
+        """
+        response = self.client.open(
+            '/api/v1//users/by-email/{email}'.format(email='email_example'),
+            method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -35,8 +46,30 @@ class TestUsersController(BaseTestCase):
         Delete User by Id
         """
         response = self.client.open(
-            '//user/{userId}'.format(user_id=789),
+            '/api/v1//users/{userId}'.format(user_id=789),
             method='DELETE')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_all_users(self):
+        """Test case for get_all_users
+
+        Get all users
+        """
+        response = self.client.open(
+            '/api/v1//users',
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_user_by_email(self):
+        """Test case for get_user_by_email
+
+        Get User by Email
+        """
+        response = self.client.open(
+            '/api/v1//users/by-email/{email}'.format(email='email_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -46,19 +79,22 @@ class TestUsersController(BaseTestCase):
         Get User by Id
         """
         response = self.client.open(
-            '//user/{userId}'.format(user_id=789),
+            '/api/v1//users/{userId}'.format(user_id=789),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_users(self):
-        """Test case for get_users
+    def test_patch_user_by_email(self):
+        """Test case for patch_user_by_email
 
-        Get all users
+        Partially update User by Email
         """
+        body = PatchUser()
         response = self.client.open(
-            '//users',
-            method='GET')
+            '/api/v1//users/by-email/{email}'.format(email='email_example'),
+            method='PATCH',
+            data=json.dumps(body),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -67,10 +103,24 @@ class TestUsersController(BaseTestCase):
 
         Partially update User by Id
         """
-        body = UserUserIdBody()
+        body = PatchUser()
         response = self.client.open(
-            '//user/{userId}'.format(user_id=789),
+            '/api/v1//users/{userId}'.format(user_id=789),
             method='PATCH',
+            data=json.dumps(body),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_update_user_by_email(self):
+        """Test case for update_user_by_email
+
+        Update User by Email
+        """
+        body = CreateUser()
+        response = self.client.open(
+            '/api/v1//users/by-email/{email}'.format(email='email_example'),
+            method='PUT',
             data=json.dumps(body),
             content_type='application/json')
         self.assert200(response,
@@ -81,9 +131,9 @@ class TestUsersController(BaseTestCase):
 
         Update User by Id
         """
-        body = UserCreate()
+        body = CreateUser()
         response = self.client.open(
-            '//user/{userId}'.format(user_id=789),
+            '/api/v1//users/{userId}'.format(user_id=789),
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')

@@ -30,14 +30,31 @@
   <script>
     const loader = document.getElementById('loading-overlay');
 
+    async function getDataAndSetMarkers() {
+      try {
+        // Obter as estações
+        const responseStations = await fetch('/getStations');
+        const stations = await responseStations.json();
+
+        // Obter os dados IoT
+        const responseIot = await fetch('/getIotData');
+        const iotData = await responseIot.json();
+        console.log("Dados IoT:", iotData);
+        
+        setMarkers(stations,iotData);
+        loader.style.display = 'none'; // Esconder o loader após os dados serem carregados
+        
+      } catch (error) {
+        console.error("Erro ao obter dados:", error);
+      }
+    }
+
     // Executar quando o DOM estiver completamente carregado
     document.addEventListener('DOMContentLoaded', () => {
       //Inicialização inicial o mapa 
       const mapDiv = document.getElementById('map');
       if (mapDiv) initMapa();
-
-      // Obter as estações iniciais
-      getNewStations();
+      
 
       if ("{{tL}}" && "{{tLg}}") {
         // Se as coordenadas de destino forem fornecidas, centralizar o mapa nessas coordenadas
@@ -47,15 +64,14 @@
           moveToTarget(targetLat, targetLng);
         }
       }
+
+      getDataAndSetMarkers();
+
+      document.getElementById("mapButton").addEventListener("click", function (e) {
+        e.preventDefault(); // cancela o clique
+      });
     });
 
-    // Pedir novas estações ao servidor com base nos filtros selecionados no momento da chamada da função
-    async function getNewStations() {
-      const response = await fetch(`/getStations`);
-      const stations = await response.json();
-      setMarkers(stations);
-      loader.classList.add('hidden');
-    }
   </script>
 </body>
 {% endblock %}

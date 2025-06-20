@@ -13,10 +13,6 @@
 
 <body>
     <div class="tableFooter">
-        <div class="customData">
-            Include Custom Data
-            <input style="margin-left:10px" type="checkbox" id="customData">
-        </div>
         <div id="resultCounter">
             Loaded 0 stations
         </div>
@@ -33,7 +29,8 @@
                     <th>Owner</th>
                     <th>
                         <div style="display: flex; align-items: center;">
-                            <input style="margin-right: 5px;" type="text" id="search-input" placeholder="Search in all fields...">
+                            <input style="margin-right: 5px;" type="text" id="search-input"
+                                placeholder="Search in all fields...">
                             <i class="fas fa-search"></i>
                         </div>
                     </th>
@@ -47,7 +44,7 @@
             No items found for your search :/
         </div>
     </div>
-    
+
     <script>
         let offset = 0;
         const limit = 50;
@@ -108,7 +105,7 @@
             }
 
             isLoading = false;
-            
+
         }
 
         // Scroll infinito
@@ -126,9 +123,10 @@
             loadStations(true);
         });
 
-        // Pesquisa ao escrever
-        customDataCheckbox.addEventListener("input", () => {
-            console.log(`Custom Data Checkbox: ${customDataCheckbox.checked}`);
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("tableButton").addEventListener("click", function (e) {
+                e.preventDefault(); // cancela o clique
+            });
         });
 
         loadStations();

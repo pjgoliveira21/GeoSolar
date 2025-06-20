@@ -1,6 +1,7 @@
 <nav style="display: flex; justify-content: space-between; align-items: center; background-color: #e0f2fe; padding: 1rem 2rem; position: relative; z-index: 2000;">
   <div style="font-size: 1.5rem; font-weight: bold;">
     <a href="/" style="text-decoration: none; color: #1e3a8a; font-weight: 500;">GeoSolar</a>
+    {{session.email if session.email else 'sdfsd'}}
   </div>
   <div style="display: flex; gap: 2rem;">
     <a href="/map" style="text-decoration: none; color: #1e3a8a; font-weight: 500;">Map</a>

@@ -4,7 +4,8 @@ info:
   description: GeoSolar
   version: 1.0.0
 servers:
-- url: http://localhost:5001/
+- url: http://localhost:5001/api/v1/
+  description: Local server
 paths:
   /users:
     get:
@@ -12,7 +13,7 @@ paths:
       - Users
       summary: Get all users
       description: Retrieve a list of all users.
-      operationId: get_users
+      operationId: get_all_users
       responses:
         "200":
           description: Successful operation
@@ -21,7 +22,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/user"
+                  $ref: "#/components/schemas/responseUser"
                 x-content-type: application/json
         "500":
           description: Internal Server Error
@@ -30,7 +31,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/error"
       x-openapi-router-controller: swagger_server.controllers.users_controller
-  /user:
     post:
       tags:
       - Users
@@ -41,7 +41,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/userCreate"
+              $ref: "#/components/schemas/createUser"
         required: true
       responses:
         "200":
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/user"
+                $ref: "#/components/schemas/responseUser"
         "400":
           description: Bad Request
           content:
@@ -63,7 +63,148 @@ paths:
               schema:
                 $ref: "#/components/schemas/error"
       x-openapi-router-controller: swagger_server.controllers.users_controller
-  /user/{userId}:
+  /users/by-email/{email}:
+    get:
+      tags:
+      - Users
+      summary: Get User by Email
+      operationId: get_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid email supplied
+        "404":
+          description: User not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    put:
+      tags:
+      - Users
+      summary: Update User by Email
+      operationId: update_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    delete:
+      tags:
+      - Users
+      summary: Delete User by Email
+      operationId: delete_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      responses:
+        "204":
+          description: User deleted successfully (No Content)
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    patch:
+      tags:
+      - Users
+      summary: Partially update User by Email
+      operationId: patch_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/patchUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /users/{userId}:
     get:
       tags:
       - Users
@@ -85,7 +226,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/user"
+                $ref: "#/components/schemas/responseUser"
         "400":
           description: Invalid ID supplied
         "404":
@@ -116,7 +257,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/userCreate"
+              $ref: "#/components/schemas/createUser"
         required: true
       responses:
         "200":
@@ -124,7 +265,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/user"
+                $ref: "#/components/schemas/responseUser"
         "400":
           description: Invalid input
         "404":
@@ -184,7 +325,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/user_userId_body"
+              $ref: "#/components/schemas/patchUser"
         required: true
       responses:
         "200":
@@ -192,7 +333,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/user"
+                $ref: "#/components/schemas/responseUser"
         "400":
           description: Invalid input
         "404":
@@ -211,7 +352,7 @@ paths:
       summary: Get all stations
       description: "Retrieve a list of all stations, with optional pagination and\
         \ search."
-      operationId: get_stations
+      operationId: get_all_stations
       parameters:
       - name: offset
         in: query
@@ -247,7 +388,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/station"
+                  $ref: "#/components/schemas/responseStation"
                 x-content-type: application/json
         "500":
           description: Internal Server Error
@@ -256,7 +397,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/error"
       x-openapi-router-controller: swagger_server.controllers.stations_controller
-  /station:
     post:
       tags:
       - Stations
@@ -267,7 +407,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/station"
+              $ref: "#/components/schemas/createStation"
         required: true
       responses:
         "200":
@@ -275,7 +415,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/station"
+                $ref: "#/components/schemas/responseStation"
         "400":
           description: Bad Request
           content:
@@ -289,7 +429,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/error"
       x-openapi-router-controller: swagger_server.controllers.stations_controller
-  /station/{stationId}:
+  /stations/{stationId}:
     get:
       tags:
       - Stations
@@ -311,56 +451,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/station"
+                $ref: "#/components/schemas/responseStation"
         "400":
           description: Invalid ID supplied
         "404":
           description: Station not found
         default:
           description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error"
-      x-openapi-router-controller: swagger_server.controllers.stations_controller
-    put:
-      tags:
-      - Stations
-      summary: Fully update Station by Id
-      operationId: update_station_by_id
-      parameters:
-      - name: stationId
-        in: path
-        description: Station id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/station"
-        required: true
-      responses:
-        "200":
-          description: Station replaced successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/station"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error"
-        "404":
-          description: Station not found
-        "500":
-          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -414,7 +511,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/stationUpdate"
+              $ref: "#/components/schemas/patchStation"
         required: true
       responses:
         "200":
@@ -422,7 +519,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/station"
+                $ref: "#/components/schemas/responseStation"
         "400":
           description: Invalid input
           content:
@@ -438,101 +535,182 @@ paths:
               schema:
                 $ref: "#/components/schemas/error"
       x-openapi-router-controller: swagger_server.controllers.stations_controller
+  /health:
+    get:
+      tags:
+      - Health
+      summary: Health check endpoint
+      description: Check the health of the service.
+      operationId: health_check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /health/stations:
+    get:
+      tags:
+      - Health
+      summary: Health check for stations
+      description: Check the health of the stations service.
+      operationId: health_check_stations
+      responses:
+        "200":
+          description: Stations service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Stations service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /health/users:
+    get:
+      tags:
+      - Health
+      summary: Health check for users
+      description: Check the health of the users service.
+      operationId: health_check_users
+      responses:
+        "200":
+          description: Users service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Users service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /iot/{iotId}:
+    get:
+      tags:
+      - IoT
+      summary: Get IoT data
+      description: Retrieve IoT data.
+      operationId: get_iot_data
+      parameters:
+      - name: iotId
+        in: path
+        description: "Iot Identifier (1,2)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+                x-content-type: image/jpeg
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: IoT data not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.iot_controller
 components:
   schemas:
-    userCreate:
-      required:
-      - email
-      - password
-      - username
+    baseUser:
       type: object
       properties:
         username:
           type: string
-          example: exampleuser25
         email:
           type: string
           format: email
-          example: example.email@example.com
         password:
           type: string
           format: password
-          example: examplepassword25
-      xml:
-        name: userCreate
-    user:
-      allOf:
-      - $ref: "#/components/schemas/userCreate"
-      - type: object
-        properties:
-          id:
-            type: integer
-            example: 21
-    stationUpdate:
-      type: object
-      properties:
-        country:
-          type: string
-        continent:
-          type: string
-        city:
-          type: string
-        locationAccuracy:
-          type: string
-          enum:
-          - approximate
-          - exact
-        latitude:
-          type: number
-          format: float
-        longitude:
-          type: number
-          format: float
-        name:
-          type: string
-        capacity:
-          type: number
-          format: float
-        capacityRating:
-          type: string
-          enum:
-          - unknown
-          - MW/ac
-          - MWp/dc
-        technologyType:
-          type: string
-          enum:
-          - unknown
-          - PV
-          - Solar Thermal
-        status:
-          type: string
-          enum:
-          - construction
-          - operating
-        startYear:
-          type: integer
-          format: int32
-        operator:
-          type: string
-        owner:
-          type: string
-        wikiUrl:
-          type: string
-        researchDate:
-          type: string
-          format: date
-    station:
-      required:
-      - capacity
-      - latitude
-      - longitude
-      - name
+    responseUser:
       type: object
       properties:
         id:
           type: integer
-          example: 21
+          format: int64
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        last_login:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      example:
+        is_active: true
+        updated_at: 2025-04-26T00:00:00Z
+        last_login: 2025-04-26T00:00:00Z
+        created_at: 2025-04-26T00:00:00Z
+        id: 1
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    createUser:
+      required:
+      - email
+      - password
+      - username
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    patchUser:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+          example: true
+        last_login:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    baseStation:
+      type: object
+      properties:
         country:
           type: string
           example: Portugal
@@ -600,14 +778,6 @@ components:
           type: string
           format: date
           example: 2025-04-26
-        createdAt:
-          type: string
-          format: date-time
-          example: 2025-04-26T00:00:00Z
-        updatedAt:
-          type: string
-          format: date-time
-          example: 2025-04-26T00:00:00Z
       example:
         name: Setif Solar Farm
         continent: Europe
@@ -625,8 +795,38 @@ components:
         longitude: 21.467
         researchDate: 2025-04-26T00:00:00.000+00:00
         status: operating
-      xml:
-        name: station
+    createStation:
+      required:
+      - capacity
+      - latitude
+      - longitude
+      - name
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
+    patchStation:
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
+    responseStation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      example:
+        createdAt: 2025-04-26T00:00:00Z
+        id: 1
+        updatedAt: 2025-04-26T00:00:00Z
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
     error:
       required:
       - code
@@ -637,15 +837,43 @@ components:
           type: string
         message:
           type: string
-    user_userId_body:
+    inline_response_200:
       type: object
       properties:
-        username:
+        status:
           type: string
-        email:
+          example: healthy
+      example:
+        status: healthy
+    inline_response_200_1:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/inline_response_200_1_values"
+        position:
+          type: array
+          items:
+            $ref: "#/components/schemas/inline_response_200_1_position"
+    inline_response_200_1_values:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: float
+        humidity:
+          type: number
+          format: float
+        time:
           type: string
-          format: email
-        password:
-          type: string
-          format: password
+    inline_response_200_1_position:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lon:
+          type: number
+          format: float
 

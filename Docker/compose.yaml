@@ -13,7 +13,7 @@ services:
     ports:
       - "80:80"  # Ou a porta que usares no frontend
     environment:
-      API_URL: http://swagger-host:5001  # URL do backend
+      API_URL: http://swagger-host:5001/api/v1  # URL do backend
       MYADDR: app-host
       MYPORT: 80
     networks:
@@ -33,6 +33,7 @@ services:
       STATIONS_DB_URL: postgresql://root:root@stationbd:5432/stations
       MYADDR: 0.0.0.0
       MYPORT: 5001
+      IOT_API_URL: https://cjsg.ddns.net:8443
     networks:
       app_network:
         ipv4_address: 192.168.100.14

@@ -1,29 +1,20 @@
 <nav style="display: flex; justify-content: space-between; align-items: center; background-color: #e0f2fe; padding: 1rem 2rem; position: relative; z-index: 2000;">
-  <div style="font-size: 1.5rem; font-weight: bold;">
-    <a href="/" style="text-decoration: none; color: #1e3a8a; font-weight: 500;">GeoSolar</a>
+  <div style="font-size: 1.5rem; font-weight: bold !important;">
+    <img src="/static/images/logo.png" alt="GeoSolar Logo" style="height: 40px; vertical-align: middle; margin-left: 0.5rem;">
+    <a href="/home" style="text-decoration: none; color: #1e3a8a; font-weight: 500 !important;">GeoSolar</a>
   </div>
   <div style="display: flex; gap: 2rem;">
-    <a href="/map" style="text-decoration: none; color: #1e3a8a; font-weight: 500;">Map</a>
-    <a href="/table" style="text-decoration: none; color: #1e3a8a; font-weight: 500;">Table</a>
+    <a href="/map" style="text-decoration: none; color: #1e3a8a; font-weight: 500 !important;" id="mapButton">Map</a>
+    <a href="/table" style="text-decoration: none; color: #1e3a8a; font-weight: 500 !important;" id="tableButton">Table</a>
   </div>
-  <div style="position: relative;">
-    <div onclick="toggleDropdown()" style="width: 40px; height: 40px; background-color: #93c5fd; border-radius: 50%; cursor: pointer;"></div>
-    <div id="dropdown" style="position: absolute; top: 50px; right: 0; background-color: white; border: 1px solid #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 2100; display: none;">
-      <div onclick="location.href='/login'" style="padding: 0.5rem 1rem; cursor: pointer; color: #1e3a8a;" onmouseover="this.style.backgroundColor='#e0f2fe'" onmouseout="this.style.backgroundColor='white'">Login</div>
-      <div onclick="location.href='/register'" style="padding: 0.5rem 1rem; cursor: pointer; color: #1e3a8a;" onmouseover="this.style.backgroundColor='#e0f2fe'" onmouseout="this.style.backgroundColor='white'">Register</div>
+  <div style="display:flex; position: relative;">
+    {% if session.email %}
+    <div style="padding: 0.5rem 1rem; color: #1e3a8a !important; font-weight: 500 !important;">Hello, {{session.username}}</div>
+    <div style="padding: 0.5rem 1rem; cursor: pointer; color: #1e3a8a !important;" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight='normal'" onclick="location.href='/logout'">Logout</div>
+    {% else %}
+    <div style="display: flex;">
+      <div onclick="location.href='/login'" style="padding: 0.5rem 1rem; cursor: pointer; color: #1e3a8a !important;" onmouseover="this.style.fontWeight='bold'", onmouseout="this.style.fontWeight='normal'">Login</div>
+      <div onclick="location.href='/register'" style="padding: 0.5rem 1rem; cursor: pointer; color: #1e3a8a !important;" onmouseover="this.style.fontWeight='bold'" onmouseout="this.style.fontWeight='normal'">Register</div>
     </div>
-  </div>
+    {% endif %}
 </nav>
-
-<script>
-  function toggleDropdown() {
-    const d = document.getElementById('dropdown');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-  }
-  document.addEventListener('click', function (e) {
-    const dropdown = document.getElementById('dropdown');
-    if (!e.target.closest('nav')) {
-      dropdown.style.display = 'none';
-    }
-  });
-</script>
