@@ -1,0 +1,25 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+{% block head %}
+<!-- Importar o CSS específico para este template -->
+<link rel="stylesheet" href="/static/styles/home.css">
+{% endblock %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}Home{% endblock %}
+
+<!-- Conteúdo do template -->
+{% block page %}
+<body>
+  <div class="wrapper">
+    <div class="diagonal-image"></div>
+    <div class="overlay"></div>
+    <div class="content">
+      <h1>Welcome to GeoSolar</h1>
+      <p>Access data from over <strong>30.000 solar stations</strong> worldwide.</p>
+      <p>Visualize insights on an <strong>interactive map</strong>, browse through a <strong>detailed data table</strong>, and manage your own <strong>custom station lists</strong>.</p>
+    </div>
+  </div>
+</body>
+{% endblock %}

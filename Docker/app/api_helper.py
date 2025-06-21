@@ -2,7 +2,9 @@ import os
 import time
 import requests
 from datetime import datetime
-
+import os
+import requests
+health_Timeout = 1
 def get_stations(offset=0, limit=0, search=""):
     url = f"{os.getenv('API_URL')}/stations"
 
@@ -67,9 +69,6 @@ def activate_user(email):
         return patch_user_by_id(user.get('id'), {"is_active": True})
     return None
 
-import os
-import requests
-
 def fetch_IOT():
     results = []
     try:
@@ -88,6 +87,22 @@ def fetch_IOT():
         return []
     return results
 
-
+def get_user_service_health():
+    try:
+        response = requests.get(os.getenv('API_URL')+"/health/users", timeout=health_Timeout)
+        response.raise_for_status()
+        return response.status_code == 200
+    except requests.RequestException as e:
+        print(f"[get_user_service_health] {e}")
+        return False
+    
+def get_station_service_health():
+    try:
+        response = requests.get(os.getenv('API_URL')+"/health/stations", timeout=health_Timeout)
+        response.raise_for_status()
+        return response.status_code == 200
+    except requests.RequestException as e:
+        print(f"[get_station_service_health] {e}")
+        return False
     
     

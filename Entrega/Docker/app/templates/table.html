@@ -1,0 +1,136 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+{% block head %}
+{{ super() }}
+<!-- Importar o CSS específico para este template -->
+<link rel="stylesheet" href="/static/styles/table.css">
+{% endblock %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}Station Table{% endblock %}
+{% block page %}
+
+<body>
+    <div class="tableFooter">
+        <div id="resultCounter">
+            Loaded 0 stations
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr style="height: 40px;">
+                    <th>Name</th>
+                    <th>Location (Lat,Lng)</th>
+                    <th>Status</th>
+                    <th>Capacity (MW)</th>
+                    <th>Country</th>
+                    <th>Owner</th>
+                    <th>
+                        <div style="display: flex; align-items: center;">
+                            <input style="margin-right: 5px;" type="text" id="search-input"
+                                placeholder="Search in all fields...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="station-body">
+            </tbody>
+        </table>
+        <!-- Mensagem para nenhum resultado -->
+        <div id="no-results-message" style="display:none; padding: 10px; font-style: italic; color: #ffffff;">
+            No items found for your search :/
+        </div>
+    </div>
+
+    <script>
+        let offset = 0;
+        const limit = 50;
+        let isLoading = false;
+        let currentSearch = "";
+
+        const tbody = document.querySelector("#station-body");
+        const wrapper = document.querySelector(".table-wrapper");
+        const searchInput = document.getElementById("search-input");
+        const noResultsMessage = document.getElementById("no-results-message");
+        const customDataCheckbox = document.getElementById("customData");
+        const resultCounter = document.getElementById("resultCounter");
+
+        async function loadStations(reset = false) {
+            if (isLoading) return;
+            isLoading = true;
+
+            const params = new URLSearchParams({
+                offset: offset,
+                limit: limit,
+                search: currentSearch
+            });
+
+            const response = await fetch(`/getStations?${params}`);
+            const stations = await response.json();
+
+            if (reset) {
+                tbody.innerHTML = "";
+                offset = 0; // resetar offset no reset para evitar inconsistência
+            }
+
+            if (stations.length === 0 && offset === 0) {
+                // Nenhum resultado na primeira página (ou após reset)
+                noResultsMessage.style.display = "block";
+                tbody.style.display = "none";
+            } else {
+                noResultsMessage.style.display = "none";
+                tbody.style.display = "table-row-group";
+            }
+
+            // Se não for reset e tiver resultados, adiciona as linhas
+            if (stations.length > 0) {
+                stations.forEach(station => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${station.name}</td>
+                        <td>${station.latitude}, ${station.longitude}</td>
+                        <td>${station.status}</td>
+                        <td>${station.capacity}</td>
+                        <td>${station.country}</td>
+                        <td>${station.owner || ''}</td>
+                        <td><a href="/map/?targetLatitude=${station.latitude}&targetLongitude=${station.longitude}"><i class="fa-solid fa-map-location-dot"></i></a></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                offset += limit;
+                resultCounter.textContent = `Loaded ${tbody.children.length} stations`;
+            }
+
+            isLoading = false;
+
+        }
+
+        // Scroll infinito
+        wrapper.addEventListener("scroll", () => {
+            const nearBottom = wrapper.scrollTop + wrapper.clientHeight >= wrapper.scrollHeight - 300;
+            if (nearBottom) {
+                loadStations();
+            }
+        });
+
+        // Pesquisa ao escrever
+        searchInput.addEventListener("input", () => {
+            currentSearch = searchInput.value.toLowerCase();
+            offset = 0;
+            loadStations(true);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("tableButton").addEventListener("click", function (e) {
+                e.preventDefault(); // cancela o clique
+            });
+        });
+
+        loadStations();
+    </script>
+</body>
+
+{% endblock %}

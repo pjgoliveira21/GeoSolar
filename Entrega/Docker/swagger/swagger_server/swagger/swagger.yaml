@@ -1,0 +1,879 @@
+openapi: 3.0.0
+info:
+  title: GeoSolar
+  description: GeoSolar
+  version: 1.0.0
+servers:
+- url: http://localhost:5001/api/v1/
+  description: Local server
+paths:
+  /users:
+    get:
+      tags:
+      - Users
+      summary: Get all users
+      description: Retrieve a list of all users.
+      operationId: get_all_users
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/responseUser"
+                x-content-type: application/json
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    post:
+      tags:
+      - Users
+      summary: Creates a user.
+      description: Create a user.
+      operationId: create_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /users/by-email/{email}:
+    get:
+      tags:
+      - Users
+      summary: Get User by Email
+      operationId: get_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid email supplied
+        "404":
+          description: User not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    put:
+      tags:
+      - Users
+      summary: Update User by Email
+      operationId: update_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    delete:
+      tags:
+      - Users
+      summary: Delete User by Email
+      operationId: delete_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      responses:
+        "204":
+          description: User deleted successfully (No Content)
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    patch:
+      tags:
+      - Users
+      summary: Partially update User by Email
+      operationId: patch_user_by_email
+      parameters:
+      - name: email
+        in: path
+        description: User email
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/patchUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /users/{userId}:
+    get:
+      tags:
+      - Users
+      summary: Get User by Id
+      operationId: get_user_by_id
+      parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    put:
+      tags:
+      - Users
+      summary: Update User by Id
+      operationId: update_user_by_id
+      parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    delete:
+      tags:
+      - Users
+      summary: Delete User by Id
+      operationId: delete_user_by_id
+      parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: User deleted successfully (No Content)
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    patch:
+      tags:
+      - Users
+      summary: Partially update User by Id
+      operationId: patch_user_by_id
+      parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/patchUser"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /stations:
+    get:
+      tags:
+      - Stations
+      summary: Get all stations
+      description: "Retrieve a list of all stations, with optional pagination and\
+        \ search."
+      operationId: get_all_stations
+      parameters:
+      - name: offset
+        in: query
+        description: Starting index for pagination
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 0
+      - name: limit
+        in: query
+        description: Number of items to return
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 100
+      - name: search
+        in: query
+        description: "Text to search in station fields (name, status, country, owner)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/responseStation"
+                x-content-type: application/json
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+    post:
+      tags:
+      - Stations
+      summary: Creates a station.
+      description: Create a station.
+      operationId: create_station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createStation"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseStation"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+  /stations/{stationId}:
+    get:
+      tags:
+      - Stations
+      summary: Get Station by Id
+      operationId: get_station_by_id
+      parameters:
+      - name: stationId
+        in: path
+        description: Station id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseStation"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Station not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+    delete:
+      tags:
+      - Stations
+      summary: Delete Station by Id
+      operationId: delete_station_by_id
+      parameters:
+      - name: stationId
+        in: path
+        description: Station id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Station deleted successfully (No Content)
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Station not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+    patch:
+      tags:
+      - Stations
+      summary: Partially update Station by Id
+      operationId: patch_station_by_id
+      parameters:
+      - name: stationId
+        in: path
+        description: Station id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/patchStation"
+        required: true
+      responses:
+        "200":
+          description: Station updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseStation"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: Station not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.stations_controller
+  /health:
+    get:
+      tags:
+      - Health
+      summary: Health check endpoint
+      description: Check the health of the service.
+      operationId: health_check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /health/stations:
+    get:
+      tags:
+      - Health
+      summary: Health check for stations
+      description: Check the health of the stations service.
+      operationId: health_check_stations
+      responses:
+        "200":
+          description: Stations service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Stations service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /health/users:
+    get:
+      tags:
+      - Health
+      summary: Health check for users
+      description: Check the health of the users service.
+      operationId: health_check_users
+      responses:
+        "200":
+          description: Users service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "500":
+          description: Users service is not healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.health_controller
+  /iot/{iotId}:
+    get:
+      tags:
+      - IoT
+      summary: Get IoT data
+      description: Retrieve IoT data.
+      operationId: get_iot_data
+      parameters:
+      - name: iotId
+        in: path
+        description: "Iot Identifier (1,2)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+                x-content-type: image/jpeg
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "404":
+          description: IoT data not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+      x-openapi-router-controller: swagger_server.controllers.iot_controller
+components:
+  schemas:
+    baseUser:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    responseUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        last_login:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      example:
+        is_active: true
+        updated_at: 2025-04-26T00:00:00Z
+        last_login: 2025-04-26T00:00:00Z
+        created_at: 2025-04-26T00:00:00Z
+        id: 1
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    createUser:
+      required:
+      - email
+      - password
+      - username
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    patchUser:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+          example: true
+        last_login:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      allOf:
+      - $ref: "#/components/schemas/baseUser"
+    baseStation:
+      type: object
+      properties:
+        country:
+          type: string
+          example: Portugal
+        continent:
+          type: string
+          example: Europe
+        city:
+          type: string
+          example: Lisboa
+        locationAccuracy:
+          type: string
+          default: approximate
+          enum:
+          - approximate
+          - exact
+        latitude:
+          type: number
+          format: float
+          example: -21.544
+        longitude:
+          type: number
+          format: float
+          example: 21.467
+        name:
+          type: string
+          default: Pulida Solar Park
+        capacity:
+          type: number
+          format: float
+          example: 212.21
+        capacityRating:
+          type: string
+          default: unknown
+          enum:
+          - unknown
+          - MW/ac
+          - MWp/dc
+        technologyType:
+          type: string
+          default: unknown
+          enum:
+          - unknown
+          - PV
+          - Solar Thermal
+        status:
+          type: string
+          default: operating
+          enum:
+          - construction
+          - operating
+        startYear:
+          type: number
+          format: int32
+          example: 2025
+        operator:
+          type: string
+          example: EDP Renewables
+        owner:
+          type: string
+          example: Iberdrola
+        wikiUrl:
+          type: string
+          example: https://www.gem.wiki/Setif_solar_farm
+        researchDate:
+          type: string
+          format: date
+          example: 2025-04-26
+      example:
+        name: Setif Solar Farm
+        continent: Europe
+        locationAccuracy: approximate
+        capacityRating: unknown
+        owner: Iberdrola
+        country: Portugal
+        city: Lisboa
+        technologyType: unknown
+        startYear: 2025
+        operator: EDP Renewables
+        capacity: 212.21
+        wikiUrl: https://www.gem.wiki/Setif_solar_farm
+        latitude: -21.544
+        longitude: 21.467
+        researchDate: 2025-04-26T00:00:00.000+00:00
+        status: operating
+    createStation:
+      required:
+      - capacity
+      - latitude
+      - longitude
+      - name
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
+    patchStation:
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
+    responseStation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2025-04-26T00:00:00Z
+      example:
+        createdAt: 2025-04-26T00:00:00Z
+        id: 1
+        updatedAt: 2025-04-26T00:00:00Z
+      allOf:
+      - $ref: "#/components/schemas/baseStation"
+    error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        status:
+          type: string
+          example: healthy
+      example:
+        status: healthy
+    inline_response_200_1:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/inline_response_200_1_values"
+        position:
+          type: array
+          items:
+            $ref: "#/components/schemas/inline_response_200_1_position"
+    inline_response_200_1_values:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: float
+        humidity:
+          type: number
+          format: float
+        time:
+          type: string
+    inline_response_200_1_position:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lon:
+          type: number
+          format: float
+

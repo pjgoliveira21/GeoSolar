@@ -1,0 +1,72 @@
+networks:
+  app_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+services:
+  app:
+    container_name: App
+    hostname: app-host
+    image: geosolar-app-image
+    ports:
+      - "80:80"  # Ou a porta que usares no frontend
+    environment:
+      API_URL: http://swagger-host:5001/api/v1  # URL do backend
+      MYADDR: app-host
+      MYPORT: 80
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.10
+    depends_on:
+      - swagger  # O frontend depende do backend
+
+  swagger:
+    container_name: Swagger
+    hostname: swagger-host
+    image: geosolar-swagger-image
+    ports:
+      - "5001:5001"  # Porta do backend (API)
+    environment:
+      USERS_DB_URL: postgresql://root:root@userbd:5432/users
+      STATIONS_DB_URL: postgresql://root:root@stationbd:5432/stations
+      MYADDR: 0.0.0.0
+      MYPORT: 5001
+      IOT_API_URL: https://cjsg.ddns.net:8443
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.14
+    depends_on:
+      - userbd
+      - stationbd
+
+  userbd:
+    container_name: Postgres-Users-Database
+    hostname: pg-users-host
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: users
+    ports:
+      - "5432:5432"  # Porta do banco de dados de utilizadores
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.11
+
+  stationbd:
+    container_name: Postgres-Stations-Database
+    hostname: pg-stations-host
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: stations
+    ports:
+      - "5433:5432"  # Porta do banco de dados de estações
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.12

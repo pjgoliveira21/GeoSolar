@@ -25,17 +25,10 @@ regex_patterns = {
 @app.route('/')
 def index():
     # check databases online
-    try:
-        response = api.get_stations(offset=0, limit=1)
-        if not response: flash("Stations Database is not available", "error")
-        
-        users = api.get_users()
-        if not users: flash("Users Database is not available", "error")
-    
-    except Exception as e:
-        logging.error(f"Error checking API: {e}")
-        flash("Error fetching Databases", "error")
-        
+    print(api.get_station_service_health())
+    if(not api.get_station_service_health()): flash("Stations Database is not available", "error")
+    if(not api.get_user_service_health()): flash("Users Database is not available", "error")
+     
     return redirect('/home')
 
 @app.route('/home')

@@ -1,0 +1,77 @@
+<!-- Herda do template base -->
+{% extends "baseTemplate.html" %}
+
+<!-- Determinar o titulo para quando este template está a ser utilizado -->
+{% block title %}World Map{% endblock %}
+
+<!-- Incluir no cabeçalho da página, em adição ao que está no template base -->
+{% block head %}
+{{ super() }}
+<!-- Open Street Maps API 1.9.4 -->
+<link rel="stylesheet" href="/static/external/leaflet/leaflet.css" />
+<script src="/static/external/leaflet/leaflet.js"></script>
+<!-- Leaflet Marker Cluster 1.4.1 -->
+<link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.css" />
+<link rel="stylesheet" href="/static/external/markercluster/MarkerCluster.Default.css" />
+<script src="/static/external/markercluster/leaflet.markercluster.js"></script>
+
+<link rel="stylesheet" href="/static/styles/map.css">
+{% endblock %}
+{% block page %}
+
+<body>
+  <div id="map"></div>
+
+  <!-- Loader Overlay -->
+  <div id="loading-overlay" class="">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    const loader = document.getElementById('loading-overlay');
+
+    async function getDataAndSetMarkers() {
+      try {
+        // Obter as estações
+        const responseStations = await fetch('/getStations');
+        const stations = await responseStations.json();
+
+        // Obter os dados IoT
+        const responseIot = await fetch('/getIotData');
+        const iotData = await responseIot.json();
+        console.log("Dados IoT:", iotData);
+        
+        setMarkers(stations,iotData);
+        loader.style.display = 'none'; // Esconder o loader após os dados serem carregados
+        
+      } catch (error) {
+        console.error("Erro ao obter dados:", error);
+      }
+    }
+
+    // Executar quando o DOM estiver completamente carregado
+    document.addEventListener('DOMContentLoaded', () => {
+      //Inicialização inicial o mapa 
+      const mapDiv = document.getElementById('map');
+      if (mapDiv) initMapa();
+      
+
+      if ("{{tL}}" && "{{tLg}}") {
+        // Se as coordenadas de destino forem fornecidas, centralizar o mapa nessas coordenadas
+        const targetLat = parseFloat("{{tL}}");
+        const targetLng = parseFloat("{{tLg}}");
+        if (!isNaN(targetLat) && !isNaN(targetLng)) {
+          moveToTarget(targetLat, targetLng);
+        }
+      }
+
+      getDataAndSetMarkers();
+
+      document.getElementById("mapButton").addEventListener("click", function (e) {
+        e.preventDefault(); // cancela o clique
+      });
+    });
+
+  </script>
+</body>
+{% endblock %}
